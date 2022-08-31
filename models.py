@@ -3,6 +3,7 @@ class Payment(models.Model):
         super().__init__()
         self.is_paid = models.BooleanField(default=False)
         self.payment_agent = models.CharField(max_length=30)    
+        self._invalid_agent = U"-"
 
 
     def conclude_payment(self):
@@ -45,7 +46,10 @@ class Payment(models.Model):
         else:
             self.set_payment_agent(self.payment_agents["Provider_5"])
 
+        self.conclude_payment()
+
         self.save()
+
 
     def get_payment_agent(self):
         U"""
@@ -54,7 +58,7 @@ class Payment(models.Model):
         .. deprecated:: r574
         """
         if self.is_payment_open():
-            return U"-"
+            return self._invalid_agent
         else:
             return self.payment_agent
 
